@@ -1,3 +1,10 @@
+/* Group Members
+* Joseph Schurer
+*
+*
+*
+*/
+
 void setup() {
   pinMode(9, OUTPUT);   
   pinMode(7, INPUT);

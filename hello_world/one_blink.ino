@@ -1,7 +1,7 @@
 /* Group Members
 * Joseph Schurer
-*
-*
+* Mahya Waddell
+* Michael Etter
 *
 *
 */

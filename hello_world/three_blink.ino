@@ -1,8 +1,9 @@
 /* Group Members
 * Joseph Schurer
-*
-*
-*
+* Mahya Waddell
+* Michael Etter
+* 
+* DID THIS WORK?
 */
 
 void setup() {

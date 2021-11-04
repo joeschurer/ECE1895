@@ -1,9 +1,9 @@
 /* Group Members
 * Joseph Schurer
+* Mahya Waddell
+* Michael Etter
 *
-*
-*
-*
+* BIG MIKE WAS HERE
 */
 
 void setup() {

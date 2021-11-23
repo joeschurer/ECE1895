@@ -24,7 +24,7 @@ int score = 0;
 int fails = 0;
 int started = -1;
 int comp = -1;
-int interval = 20;
+int interval = 20000;
 unsigned long prevTime;
 
 #define ROLL_THRESHOLD  15
@@ -56,10 +56,35 @@ void setup() {
   
   lcd.clear();
   randomSeed(analogRead(0));
+  twist.setColor(100, 10, 50);
 }
 sensors_event_t event;
 
+void announceTask(int task){
+  lcd.clear();
+  lcd.print(taskStrings[task]);
+  tone(10,taskTones[task],2);//check for the right pin here
+  twist.setColor(100, 10, 50);
+  
+}
 
+void compTask(int task){
+  if(task == currTask){
+    score++;
+    twist.setColor(0, 255, 0);
+    lcd.clear();
+    lcd.print("SUCCESS!");
+  } else {
+    fails++;
+    lcd.clear();
+    lcd.print("FAIL!");
+    tone(10,3000,5);
+    twist.setColor(255,0,0);
+  }
+  delay(1000);
+  comp =1;
+  interval = interval -800;
+}
 void loop() {
   //detect start switch
   if(started == -1){
@@ -78,7 +103,7 @@ void loop() {
   }
 
   if(started==1){
-    if((fails<4) && score <99){
+    if((fails<4) && score <5){
       //generate task
       currTask = random(0,3);
       announceTask(currTask);
@@ -104,29 +129,23 @@ void loop() {
         totalAccel = sqrt(X*X + Y*Y + Z*Z);
         
         Z = event.acceleration.z;
-    
-        //test total accel
-        /*lcd.print(totalAccel);
-        delay(1000);
-        lcd.clear();
-        */
-    
-        //test twist count
-        //lcd.print(twist.getDiff());
-        //delay(1000);
-        //lcd.clear();
+       // lcd.print(twist.getDiff());
+       // delay(1000);
+       // lcd.clear();
         
         int diff = twist.getDiff();
         myTime = millis();
         if(myTime > (prevTime + interval)){
+          lcd.clear();
           lcd.setCursor(1,0);
           lcd.print("Time's Up!");
           tone(10,1000,20);
           delay(1000);
-          compTask(3);
+          compTask(-1);
         }
-        else if(diff>10){
+        else if(diff!=0){
             //task completed check if correct one
+            lcd.clear();
             lcd.setCursor(1,0);
             lcd.print("Stired!");
             tone(10,1000,20);
@@ -135,53 +154,36 @@ void loop() {
             compTask(2);
         } else if(Z<-8){
             //task completed check if correct one
+          lcd.clear();
           lcd.setCursor(1,0);
           lcd.print("Poured!");
           tone(10,1000,20);
           delay(1000);
           lcd.clear();
    
-          compTask(0);;
+          compTask(1);;
         }else if (totalAccel > ROLL_THRESHOLD) {
             //task completed check if correct one
+          lcd.clear();
           lcd.setCursor(1,0);
           lcd.print("Shaking!");
           delay(1000);
           lcd.clear();
           
-          compTask(1);
+          compTask(0);
         }
       
       }
     }else{
       lcd.clear();
-      if(score>=99){
-        lcd.print("WIN!!");
-      } else {
+      if(!(fails<4)){
         lcd.print("YOU LOST");
+        twist.setColor(255, 0, 0);
+      } else {
+        lcd.print("WIN!!");
+        twist.setColor(0, 255, 0);
       }
       delay(5000);
     }
   }
-}
-
-void announceTask(int task){
-  lcd.clear();
-  lcd.print(taskStrings[task]);
-  tone(10,taskTones[task],2);//check for the right pin here
-  
-}
-
-void compTask(int task){
-  if(task == currTask){
-    score++;
-  } else {
-    fails++;
-    lcd.clear();
-    lcd.print("FAIL!");
-    tone(10,3000,5);
-  }
-
-  comp =1;
-  interval = interval -.15;
 }

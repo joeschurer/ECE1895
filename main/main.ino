@@ -103,8 +103,9 @@ void loop() {
   }
 
   if(started==1){
-    if((fails<4) && score <5){
+    if((fails==0) && score <5){
       //generate task
+      int diff=twist.getDiff();
       currTask = random(0,3);
       announceTask(currTask);
       delay(2000);
@@ -133,7 +134,7 @@ void loop() {
        // delay(1000);
        // lcd.clear();
         
-        int diff = twist.getDiff();
+        diff = twist.getDiff();
         myTime = millis();
         if(myTime > (prevTime + interval)){
           lcd.clear();
@@ -176,11 +177,18 @@ void loop() {
       }
     }else{
       lcd.clear();
-      if(!(fails<4)){
+      lcd.setCursor(1,0);
+      if(fails==1){
         lcd.print("YOU LOST");
+        lcd.setCursor(1,1);
+        lcd.print("SCORE: ");
+        lcd.print(score);
         twist.setColor(255, 0, 0);
       } else {
         lcd.print("WIN!!");
+        lcd.setCursor(1,1);
+        lcd.print("SCORE: ");
+        lcd.print(score);
         twist.setColor(0, 255, 0);
       }
       delay(5000);
